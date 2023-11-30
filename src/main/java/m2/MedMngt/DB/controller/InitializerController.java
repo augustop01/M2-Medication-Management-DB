@@ -16,7 +16,7 @@ import java.util.ArrayList;
 @RequestMapping(value = "/")
 public class InitializerController {
 
-   private InitializerService initializerService;
+   private final InitializerService initializerService;
 
    public InitializerController(InitializerService initializerService){
        this.initializerService = initializerService;
