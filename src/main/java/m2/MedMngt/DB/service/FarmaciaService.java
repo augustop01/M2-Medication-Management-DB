@@ -23,4 +23,13 @@ public class FarmaciaService {
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi encontrada nenhuma farmácia com o CNPJ " + cnpj + "."));
     }
 
+    public Farmacia cadastrar(Farmacia farmacia){
+        boolean jaCadastrada = farmaciaRepository.existsById(farmacia.getCnpj());
+        if (jaCadastrada){
+            throw new RuntimeException("Já existe uma farmácia com esse CNPJ.");
+        }
+        farmacia = farmaciaRepository.save(farmacia);
+        return farmacia;
+    }
+
 }
