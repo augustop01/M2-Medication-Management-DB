@@ -22,8 +22,8 @@ public class Farmacia{
     private String nomeFantasia;
     @Column(nullable = false)
     private String email;
-    @Column(nullable = false)
     private String telefone;
+    @Column(nullable = false)
     private String celular;
     @Embedded
     private Endereco endereco;

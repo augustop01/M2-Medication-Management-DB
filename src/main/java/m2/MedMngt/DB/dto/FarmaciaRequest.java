@@ -16,8 +16,8 @@ public class FarmaciaRequest {
     private String nomeFantasia;
     @NotBlank(message = "O campo 'e-mail' não pode estar em branco.")
     private String email;
-    @NotBlank(message = "O campo 'telefone' não pode estar em branco.")
     private String telefone;
+    @NotBlank(message = "O campo 'celular' não pode estar em branco.")
     private String celular;
     @Valid
     private Endereco endereco;
