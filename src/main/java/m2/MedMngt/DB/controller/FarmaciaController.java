@@ -10,11 +10,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@Validated
 @RequestMapping(value = "/farmacias")
 public class FarmaciaController {
 
@@ -47,7 +49,7 @@ public class FarmaciaController {
     }
 
     @PostMapping
-    public ResponseEntity<FarmaciaResponse> cadastrar(@RequestBody @Valid FarmaciaRequest farmaciaRequest){
+    public ResponseEntity<FarmaciaResponse> cadastrar(@Valid @RequestBody FarmaciaRequest farmaciaRequest){
         var farmacia = mapper.map(farmaciaRequest, Farmacia.class);
         farmacia = farmaciaService.cadastrar(farmacia);
         var result = mapper.map(farmacia, FarmaciaResponse.class);

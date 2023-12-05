@@ -3,6 +3,8 @@ package m2.MedMngt.DB.models;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,21 +16,21 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Endereco{
-    @Column(nullable = false)
+    @NotNull(message = "O campo 'CEP' é obrigatório e deve ser preenchido corretamente.")
     private Long cep;
-    @Column(nullable = false)
+    @NotBlank(message = "O campo 'logradouro' deve ser preenchido.")
     private String logradouro;
-    @Column(nullable = false)
+    @NotNull(message = "O campo 'número' é obrigatório e deve ser preenchido corretamente.")
     private Integer numero;
-    @Column(nullable = false)
+    @NotBlank(message = "O campo 'bairro' deve ser preenchido.")
     private String bairro;
-    @Column(nullable = false)
+    @NotBlank(message = "O campo 'cidade' deve ser preenchido.")
     private String cidade;
-    @Column(nullable = false)
+    @NotBlank(message = "O campo 'estado' deve ser preenchido.")
     private String estado;
     private String complemento;
-    @Column(nullable = false)
+    @NotNull(message = "O campo 'latitude' é obrigatório e deve ser preenchido corretamente.")
     private Double latitude;
-    @Column(nullable = false)
+    @NotNull(message = "O campo 'longitude' é obrigatório e deve ser preenchido corretamente.")
     private Double longitude;
 }
