@@ -18,6 +18,6 @@ public class MedicamentoRequest {
     private String descricao;
     @NotNull(message = "O preço do medicamento não foi informado.")
     private Float preco;
-    @NotBlank(message = "O tipo do medicamento ('COMUM' ou 'CONTROLADO') não foi informado.")
+    @NotNull(message = "O tipo do medicamento ('COMUM' ou 'CONTROLADO') não foi informado.")
     private TipoMedicamento tipo;
 }
