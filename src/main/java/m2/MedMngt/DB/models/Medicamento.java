@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Medicamento {
     @Id
-    @Column(nullable = false)
+    @Column(name = "NRO_REGISTRO", nullable = false)
     private Integer nroRegistro;
     @Column(nullable = false)
     private String nome;
