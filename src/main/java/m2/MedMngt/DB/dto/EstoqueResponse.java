@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EstoqueResponse {
+    private Long cnpj;
     private String nomeMedicamento;
     private Integer nroRegistro;
     private Integer quantidade;
