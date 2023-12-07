@@ -1,16 +1,18 @@
 package m2.MedMngt.DB.controller;
 
+import jakarta.validation.Valid;
+import m2.MedMngt.DB.dto.MedicamentoRequest;
 import m2.MedMngt.DB.dto.MedicamentoResponse;
 import m2.MedMngt.DB.models.Medicamento;
 import m2.MedMngt.DB.repository.MedicamentoRepository;
 import m2.MedMngt.DB.service.MedicamentoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,5 +39,24 @@ public class MedicamentoController {
             result.add(medicamentoDTO);
         }
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping
+    public ResponseEntity<MedicamentoResponse> incluir(@Valid @RequestBody MedicamentoRequest medicamentoRequest){
+        var medicamento = mapper.map(medicamentoRequest, Medicamento.class);
+        medicamento = medicamentoService.incluir(medicamento, medicamentoRequest);
+        var result = mapper.map(medicamento, MedicamentoResponse.class);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex){
+        return ResponseEntity.badRequest().body("FALHA NA OPERAÇÃO: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
+        return ResponseEntity.badRequest().body("CAMPO INVÁLIDO: " + ex.getFieldError().getDefaultMessage());
     }
 }

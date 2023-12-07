@@ -2,10 +2,13 @@ package m2.MedMngt.DB.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+@Data
 @Entity
 @Table(name = "ESTOQUES")
 @IdClass(IdEstoque.class)
@@ -13,13 +16,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Estoque {
     @Id
-    @Column(nullable = false)
     private Long cnpj;
     @Id
-    @Column(nullable = false)
     private Integer nroRegistro;
-    @Column(nullable = false)
     private Integer quantidade;
-    @Column(nullable = false)
     private LocalDateTime dataAtualizacao;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "nroRegistro", insertable = false, updatable = false)
+    private Medicamento medicamento;
+
+    public Estoque(Long cnpj, Integer nroRegistro, Integer quantidade, LocalDateTime dataAtualizacao) {
+        this.cnpj = cnpj;
+        this.nroRegistro = nroRegistro;
+        this.quantidade = quantidade;
+        this.dataAtualizacao = dataAtualizacao;
+    }
 }
