@@ -50,18 +50,13 @@ public class EstoqueController {
 
     @GetMapping("/{cnpj}")
     public ResponseEntity<List<EstoqueResponse>> consultar(@PathVariable("cnpj") Long cnpj){
-        List<Estoque> estoques = estoqueRepository.findAllByCnpj(cnpj);
-
-        if (!estoques.isEmpty()){
+       var estoques = estoqueService.consultar(cnpj);
             var result = new ArrayList<EstoqueResponse>();
             for (Estoque estoque : estoques){
                 var estoqueDTO = mapper.map(estoque, EstoqueResponse.class);
                 result.add(estoqueDTO);
             }
             return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
     }
 
     @PostMapping()
@@ -110,7 +105,7 @@ public class EstoqueController {
         }
         Estoque estoqueAtual = estoqueRepository.findByCnpjAndNroRegistro(requestEstoque.getCnpj(), requestEstoque.getNroRegistro());
         if (estoqueAtual == null){
-            return new ResponseEntity("ERRO DE OPERAÇÃO: Não consta o medicamento com número de registro " + requestEstoque.getNroRegistro() + " no requestEstoque da farmácia com CNPJ " + requestEstoque.getCnpj() + ".", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("ERRO DE OPERAÇÃO: Não consta o medicamento com número de registro " + requestEstoque.getNroRegistro() + " no estoque da farmácia com CNPJ " + requestEstoque.getCnpj() + ".", HttpStatus.BAD_REQUEST);
         }
         if (estoqueAtual.getQuantidade() > requestEstoque.getQuantidade()){
             estoqueAtual.setQuantidade(estoqueAtual.getQuantidade() - requestEstoque.getQuantidade());
@@ -124,5 +119,61 @@ public class EstoqueController {
         estoqueAtual = estoqueService.zerar(estoqueAtual);
         var result = mapper.map(estoqueAtual, EstoqueResponse.class);
         return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @PutMapping ()
+    public ResponseEntity<EstoqueResponse> transferirMedicamento(@RequestBody EstoqueRequest estoqueRequest){
+        Estoque estoqueDestino = estoqueRepository.findByCnpjAndNroRegistro(estoqueRequest.getCnpjDestino(), estoqueRequest.getNroRegistro());
+        Estoque estoqueOrigem = estoqueRepository.findByCnpjAndNroRegistro(estoqueRequest.getCnpjOrigem(), estoqueRequest.getNroRegistro());
+        if (estoqueRequest.getCnpjOrigem() == null || estoqueRequest.getCnpjDestino() == null || estoqueRequest.getNroRegistro() == null || estoqueRequest.getQuantidade() == null){
+            return new ResponseEntity("CAMPO OBRIGATÓRIO: Todos os campos ('cnpjOrigem', 'cnpjDestino, 'nroRegistro' e 'quantidade') são obrigatórios e devem ser informados.", HttpStatus.BAD_REQUEST);
+        }
+        if (estoqueRepository.findAllByCnpj(estoqueRequest.getCnpjOrigem()).isEmpty()){
+            return new ResponseEntity("ERRO DE OPERAÇÃO: o CNPJ informado no campo 'cnpjOrigem' não consta no banco de dados.", HttpStatus.BAD_REQUEST);
+        }
+        if (estoqueRepository.findAllByCnpj(estoqueRequest.getCnpjDestino()).isEmpty()){
+            return new ResponseEntity("ERRO DE OPERAÇÃO: o CNPJ informado no campo 'cnpjDestino' não consta no banco de dados.", HttpStatus.BAD_REQUEST);
+        }
+        if (estoqueRepository.findAllByNroRegistro(estoqueRequest.getNroRegistro()).isEmpty()){
+            return new ResponseEntity("ERRO DE OPERAÇÃO: o Número de Registro informado no campo 'nroRegistro' não consta no banco de dados.", HttpStatus.BAD_REQUEST);
+        }
+        if (estoqueRequest.getQuantidade() <= 0){
+            return new ResponseEntity("ERRO DE OPERAÇÃO: A quantidade informada no campo 'quantidade' deve ser maior que 0 (zero).", HttpStatus.BAD_REQUEST);
+        }
+        if (estoqueOrigem == null){
+            return new ResponseEntity("ERRO DE OPERAÇÃO: Não consta o medicamento com número de registro " + estoqueRequest.getNroRegistro() + " no estoque da farmácia com CNPJ " + estoqueRequest.getCnpjOrigem() + ".", HttpStatus.BAD_REQUEST);
+        }
+        if (estoqueDestino == null){
+            estoqueDestino = new Estoque();
+            estoqueDestino.setQuantidade(0);
+            estoqueDestino.setCnpj(estoqueRequest.getCnpjDestino());
+            estoqueDestino.setNroRegistro(estoqueRequest.getNroRegistro());
+            estoqueDestino.setDataAtualizacao(LocalDateTime.now());
+        }
+        if (estoqueOrigem.getQuantidade() < estoqueRequest.getQuantidade()){
+            return new ResponseEntity("ERRO DE OPERAÇÃO: A quantidade solicitada do medicamento de número de registro '" + estoqueRequest.getNroRegistro() + "' é maior que a quantidade disponível no estoque de origem.", HttpStatus.BAD_REQUEST);
+        }
+
+        estoqueOrigem.setQuantidade(estoqueOrigem.getQuantidade() - estoqueRequest.getQuantidade());
+        estoqueOrigem.setDataAtualizacao(LocalDateTime.now());
+        estoqueDestino.setQuantidade(estoqueDestino.getQuantidade() + estoqueRequest.getQuantidade());
+        estoqueDestino.setDataAtualizacao(LocalDateTime.now());
+        estoqueService.salvar(estoqueDestino);
+        estoqueService.salvar(estoqueOrigem);
+
+        if (estoqueOrigem.getQuantidade() == 0){
+            estoqueService.zerar(estoqueOrigem);
+        }
+
+        EstoqueResponse estoqueResponse = new EstoqueResponse();
+        estoqueResponse.setNroRegistro(estoqueOrigem.getNroRegistro());
+        estoqueResponse.setNomeMedicamento(estoqueOrigem.getMedicamento().getNome());
+        estoqueResponse.setCnpjOrigem(estoqueOrigem.getCnpj());
+        estoqueResponse.setQuantidadeOrigem(estoqueOrigem.getQuantidade());
+        estoqueResponse.setCnpjDestino(estoqueDestino.getCnpj());
+        estoqueResponse.setQuantidadeDestino(estoqueDestino.getQuantidade());
+        estoqueResponse.setDataAtualizacao(LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.OK).body(estoqueResponse);
     }
 }

@@ -12,6 +12,4 @@ public class EstoqueRequest {
     private Long cnpjDestino;
     private Integer nroRegistro;
     private Integer quantidade;
-    private Integer quantidadeOrigem;
-    private Integer quantidadeDestino;
     private LocalDateTime dataAtualizacao;}

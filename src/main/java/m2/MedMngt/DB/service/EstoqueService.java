@@ -29,10 +29,10 @@ public class EstoqueService {
         }
         return estoques;
     }
-    public List<Estoque> consultar(Long cnpj) {
-        List<Estoque> estoques = estoqueRepository.findAllByCnpj(cnpj);
+    public List<Estoque> consultar(Long cnpj) throws ResponseStatusException{
+        List<Estoque> estoques = this.estoqueRepository.findAllByCnpj(cnpj);
         if (estoques.isEmpty()){
-            throw new RuntimeException("Nenhum estoque foi encontrado com esses parâmetros.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi encontrado nenhum estoque com o CNPJ " + cnpj + ".");
         }
     return estoques;
 }
