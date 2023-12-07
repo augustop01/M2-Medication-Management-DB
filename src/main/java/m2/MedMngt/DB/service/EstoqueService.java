@@ -37,21 +37,13 @@ public class EstoqueService {
     return estoques;
 }
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
     public Estoque salvar(Estoque estoque) {
-        if (estoque.getCnpj() == null || estoque.getNroRegistro() == null || estoque.getQuantidade() == null){
-           throw  new RuntimeException("CAMPO OBRIGATÓRIO: Todos os campos ('cnpj', 'nroRegistro' e 'quantidade') são obrigatórios e devem ser informados.");
-        }
-        if (estoqueRepository.findAllByCnpj(estoque.getCnpj()).isEmpty()){
-            throw  new RuntimeException("CAMPO OBRIGATÓRIO: Todos os campos ('cnpj', 'nroRegistro' e 'quantidade') são obrigatórios e devem ser informados.");
-        }
-        if (estoqueRepository.findAllByNroRegistro(estoque.getNroRegistro()).isEmpty()){
-            throw  new RuntimeException("CAMPO OBRIGATÓRIO: Todos os campos ('cnpj', 'nroRegistro' e 'quantidade') são obrigatórios e devem ser informados.");
-        }
-        if (estoque.getQuantidade() <= 0){
-            throw  new RuntimeException("CAMPO OBRIGATÓRIO: Todos os campos ('cnpj', 'nroRegistro' e 'quantidade') são obrigatórios e devem ser informados.");
-        }
         estoque = estoqueRepository.save(estoque);
+        return estoque;
+    }
+
+    public Estoque zerar(Estoque estoque){
+        estoqueRepository.delete(estoque);
         return estoque;
     }
 }
