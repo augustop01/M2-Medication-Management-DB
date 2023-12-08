@@ -49,14 +49,5 @@ public class MedicamentoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex){
-        return ResponseEntity.badRequest().body("FALHA NA OPERAÇÃO: " + ex.getMessage());
-    }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
-        return ResponseEntity.badRequest().body("CAMPO INVÁLIDO: " + ex.getFieldError().getDefaultMessage());
-    }
 }

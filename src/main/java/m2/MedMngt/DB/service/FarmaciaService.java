@@ -26,7 +26,7 @@ public class FarmaciaService {
     public Farmacia cadastrar(Farmacia farmacia){
         boolean jaCadastrada = farmaciaRepository.existsById(farmacia.getCnpj());
         if (jaCadastrada){
-            throw new RuntimeException("Já existe uma farmácia com esse CNPJ.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ERRO DE OPERAÇÃO: Já existe uma farmácia com esse CNPJ.");
         }
         farmacia = farmaciaRepository.save(farmacia);
         return farmacia;

@@ -25,7 +25,7 @@ public class EstoqueService {
     public List<Estoque> consultar(){
         List<Estoque> estoques = estoqueRepository.findAll();
         if (estoques.isEmpty()){
-            throw new RuntimeException("Nenhum estoque foi encontrado.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum estoque foi encontrado.");
         }
         return estoques;
     }

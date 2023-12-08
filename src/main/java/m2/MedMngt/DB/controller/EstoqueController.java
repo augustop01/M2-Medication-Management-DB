@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -63,16 +65,16 @@ public class EstoqueController {
     public ResponseEntity<EstoqueResponse> adicionarMedicamento(@RequestBody EstoqueRequest estoqueRequest){
         var estoque = mapper.map(estoqueRequest, Estoque.class);
         if (estoque.getCnpj() == null || estoque.getNroRegistro() == null || estoque.getQuantidade() == null){
-            return new ResponseEntity("CAMPO OBRIGATÓRIO: Todos os campos ('cnpj', 'nroRegistro' e 'quantidade') são obrigatórios e devem ser informados.", HttpStatus.BAD_REQUEST);
+            throwBadRequest("CAMPO OBRIGATÓRIO: Todos os campos ('cnpj', 'nroRegistro' e 'quantidade') são obrigatórios e devem ser informados.");
         }
         if (estoqueRepository.findAllByCnpj(estoque.getCnpj()).isEmpty()){
-            return new ResponseEntity("ERRO DE OPERAÇÃO: o CNPJ informado no campo 'cnpj' não consta no banco de dados.", HttpStatus.BAD_REQUEST);
+            throwBadRequest("ERRO DE OPERAÇÃO: o CNPJ informado no campo 'cnpj' não consta no banco de dados.");
         }
         if (estoqueRepository.findAllByNroRegistro(estoque.getNroRegistro()).isEmpty()){
-            return new ResponseEntity("ERRO DE OPERAÇÃO: o Número de Registro informado no campo 'nroRegistro' não consta no banco de dados.", HttpStatus.BAD_REQUEST);
+            throwBadRequest("ERRO DE OPERAÇÃO: o Número de Registro informado no campo 'nroRegistro' não consta no banco de dados.");
         }
         if (estoque.getQuantidade() <= 0){
-            return new ResponseEntity("ERRO DE OPERAÇÃO: A quantidade informada no campo 'quantidade' deve ser maior que 0 (zero).", HttpStatus.BAD_REQUEST);
+            throwBadRequest("ERRO DE OPERAÇÃO: A quantidade informada no campo 'quantidade' deve ser maior que 0 (zero).");
         }
         Estoque getEstoque = estoqueRepository.findByCnpjAndNroRegistro(estoque.getCnpj(), estoque.getNroRegistro());
         if (getEstoque == null){
@@ -92,20 +94,20 @@ public class EstoqueController {
     public ResponseEntity<EstoqueResponse> venderMedicamento(@RequestBody EstoqueRequest estoqueRequest){
         var requestEstoque = mapper.map(estoqueRequest, Estoque.class);
         if (requestEstoque.getCnpj() == null || requestEstoque.getNroRegistro() == null || requestEstoque.getQuantidade() == null){
-            return new ResponseEntity("CAMPO OBRIGATÓRIO: Todos os campos ('cnpj', 'nroRegistro' e 'quantidade') são obrigatórios e devem ser informados.", HttpStatus.BAD_REQUEST);
+            throwBadRequest("CAMPO OBRIGATÓRIO: Todos os campos ('cnpj', 'nroRegistro' e 'quantidade') são obrigatórios e devem ser informados.");
         }
         if (estoqueRepository.findAllByCnpj(requestEstoque.getCnpj()).isEmpty()){
-            return new ResponseEntity("ERRO DE OPERAÇÃO: o CNPJ informado no campo 'cnpj' não consta no banco de dados.", HttpStatus.BAD_REQUEST);
+            throwBadRequest("ERRO DE OPERAÇÃO: o CNPJ informado no campo 'cnpj' não consta no banco de dados.");
         }
         if (estoqueRepository.findAllByNroRegistro(requestEstoque.getNroRegistro()).isEmpty()){
-            return new ResponseEntity("ERRO DE OPERAÇÃO: o Número de Registro informado no campo 'nroRegistro' não consta no banco de dados.", HttpStatus.BAD_REQUEST);
+            throwBadRequest("ERRO DE OPERAÇÃO: o Número de Registro informado no campo 'nroRegistro' não consta no banco de dados.");
         }
         if (requestEstoque.getQuantidade() <= 0){
-            return new ResponseEntity("ERRO DE OPERAÇÃO: A quantidade informada no campo 'quantidade' deve ser maior que 0 (zero).", HttpStatus.BAD_REQUEST);
+            throwBadRequest("ERRO DE OPERAÇÃO: A quantidade informada no campo 'quantidade' deve ser maior que 0 (zero).");
         }
         Estoque estoqueAtual = estoqueRepository.findByCnpjAndNroRegistro(requestEstoque.getCnpj(), requestEstoque.getNroRegistro());
         if (estoqueAtual == null){
-            return new ResponseEntity("ERRO DE OPERAÇÃO: Não consta o medicamento com número de registro " + requestEstoque.getNroRegistro() + " no estoque da farmácia com CNPJ " + requestEstoque.getCnpj() + ".", HttpStatus.BAD_REQUEST);
+            throwBadRequest("ERRO DE OPERAÇÃO: Não consta o medicamento com número de registro " + requestEstoque.getNroRegistro() + " no estoque da farmácia com CNPJ " + requestEstoque.getCnpj() + ".");
         }
         if (estoqueAtual.getQuantidade() > requestEstoque.getQuantidade()){
             estoqueAtual.setQuantidade(estoqueAtual.getQuantidade() - requestEstoque.getQuantidade());
@@ -126,22 +128,22 @@ public class EstoqueController {
         Estoque estoqueDestino = estoqueRepository.findByCnpjAndNroRegistro(estoqueRequest.getCnpjDestino(), estoqueRequest.getNroRegistro());
         Estoque estoqueOrigem = estoqueRepository.findByCnpjAndNroRegistro(estoqueRequest.getCnpjOrigem(), estoqueRequest.getNroRegistro());
         if (estoqueRequest.getCnpjOrigem() == null || estoqueRequest.getCnpjDestino() == null || estoqueRequest.getNroRegistro() == null || estoqueRequest.getQuantidade() == null){
-            return new ResponseEntity("CAMPO OBRIGATÓRIO: Todos os campos ('cnpjOrigem', 'cnpjDestino, 'nroRegistro' e 'quantidade') são obrigatórios e devem ser informados.", HttpStatus.BAD_REQUEST);
+            throwBadRequest("CAMPO OBRIGATÓRIO: Todos os campos ('cnpjOrigem', 'cnpjDestino, 'nroRegistro' e 'quantidade') são obrigatórios e devem ser informados.");
         }
         if (estoqueRepository.findAllByCnpj(estoqueRequest.getCnpjOrigem()).isEmpty()){
-            return new ResponseEntity("ERRO DE OPERAÇÃO: o CNPJ informado no campo 'cnpjOrigem' não consta no banco de dados.", HttpStatus.BAD_REQUEST);
+            throwBadRequest("ERRO DE OPERAÇÃO: o CNPJ informado no campo 'cnpjOrigem' não consta no banco de dados.");
         }
         if (estoqueRepository.findAllByCnpj(estoqueRequest.getCnpjDestino()).isEmpty()){
-            return new ResponseEntity("ERRO DE OPERAÇÃO: o CNPJ informado no campo 'cnpjDestino' não consta no banco de dados.", HttpStatus.BAD_REQUEST);
+            throwBadRequest("ERRO DE OPERAÇÃO: o CNPJ informado no campo 'cnpjDestino' não consta no banco de dados.");
         }
         if (estoqueRepository.findAllByNroRegistro(estoqueRequest.getNroRegistro()).isEmpty()){
-            return new ResponseEntity("ERRO DE OPERAÇÃO: o Número de Registro informado no campo 'nroRegistro' não consta no banco de dados.", HttpStatus.BAD_REQUEST);
+            throwBadRequest("ERRO DE OPERAÇÃO: o Número de Registro informado no campo 'nroRegistro' não consta no banco de dados.");
         }
         if (estoqueRequest.getQuantidade() <= 0){
-            return new ResponseEntity("ERRO DE OPERAÇÃO: A quantidade informada no campo 'quantidade' deve ser maior que 0 (zero).", HttpStatus.BAD_REQUEST);
+            throwBadRequest("ERRO DE OPERAÇÃO: A quantidade informada no campo 'quantidade' deve ser maior que 0 (zero).");
         }
         if (estoqueOrigem == null){
-            return new ResponseEntity("ERRO DE OPERAÇÃO: Não consta o medicamento com número de registro " + estoqueRequest.getNroRegistro() + " no estoque da farmácia com CNPJ " + estoqueRequest.getCnpjOrigem() + ".", HttpStatus.BAD_REQUEST);
+            throwBadRequest("ERRO DE OPERAÇÃO: Não consta o medicamento com número de registro " + estoqueRequest.getNroRegistro() + " no estoque da farmácia com CNPJ " + estoqueRequest.getCnpjOrigem() + ".");
         }
         if (estoqueDestino == null){
             estoqueDestino = new Estoque();
@@ -151,7 +153,7 @@ public class EstoqueController {
             estoqueDestino.setDataAtualizacao(LocalDateTime.now());
         }
         if (estoqueOrigem.getQuantidade() < estoqueRequest.getQuantidade()){
-            return new ResponseEntity("ERRO DE OPERAÇÃO: A quantidade solicitada do medicamento de número de registro '" + estoqueRequest.getNroRegistro() + "' é maior que a quantidade disponível no estoque de origem.", HttpStatus.BAD_REQUEST);
+            throwBadRequest("ERRO DE OPERAÇÃO: A quantidade solicitada do medicamento de número de registro '" + estoqueRequest.getNroRegistro() + "' é maior que a quantidade disponível no estoque de origem.");
         }
 
         estoqueOrigem.setQuantidade(estoqueOrigem.getQuantidade() - estoqueRequest.getQuantidade());
@@ -175,5 +177,9 @@ public class EstoqueController {
         estoqueResponse.setDataAtualizacao(LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.OK).body(estoqueResponse);
+    }
+
+    private void throwBadRequest(String msg){
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, msg);
     }
 }
