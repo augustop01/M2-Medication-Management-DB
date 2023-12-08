@@ -109,6 +109,9 @@ public class EstoqueController {
         if (estoqueAtual == null){
             throwBadRequest("ERRO DE OPERAÇÃO: Não consta o medicamento com número de registro " + requestEstoque.getNroRegistro() + " no estoque da farmácia com CNPJ " + requestEstoque.getCnpj() + ".");
         }
+        if (estoqueAtual.getQuantidade() < requestEstoque.getQuantidade()){
+            throwBadRequest("ERRO DE OPERAÇÃO: A quantidade solicitada do medicamento com número de registro " + requestEstoque.getNroRegistro() + " é maior que a quantidade disponível na farmácia de CNPJ " + requestEstoque.getCnpj() + ".");
+        }
         if (estoqueAtual.getQuantidade() > requestEstoque.getQuantidade()){
             estoqueAtual.setQuantidade(estoqueAtual.getQuantidade() - requestEstoque.getQuantidade());
             estoqueAtual.setDataAtualizacao(LocalDateTime.now());
@@ -116,7 +119,7 @@ public class EstoqueController {
             var result = mapper.map(estoqueAtual, EstoqueResponse.class);
             return ResponseEntity.status(HttpStatus.OK).body(result);
         }
-        estoqueAtual.setQuantidade(estoqueAtual.getQuantidade() - requestEstoque.getQuantidade());
+        estoqueAtual.setQuantidade(0);
         estoqueAtual.setDataAtualizacao(LocalDateTime.now());
         estoqueAtual = estoqueService.zerar(estoqueAtual);
         var result = mapper.map(estoqueAtual, EstoqueResponse.class);
