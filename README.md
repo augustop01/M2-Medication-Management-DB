@@ -65,14 +65,14 @@ Certifique-se de ter instalado em sua máquina:
     ```
     
 ### Farmacias
-####Consulta de farmácias
+#### Consulta de farmácias
 
-1. Para a consulta geral de farmácias, faça uma requisição GET para: `[http](http://localhost:8080/farmacias)`.
-2. Para a consulta específica de farmácia, digite o CNPJ da farmácia em uma requisição GET para `[http](http://localhost:8080/farmacias/[CNPJ da farmácia])`.
+1. Para a consulta geral de farmácias, faça uma requisição GET para: `http://localhost:8080/farmacias`.
+2. Para a consulta específica de farmácia, digite o CNPJ da farmácia em uma requisição GET para `http://localhost:8080/farmacias/[CNPJ da farmácia]`.
 
-####Cadastro de nova farmácia
+#### Cadastro de nova farmácia
 
-1. Faça uma requisição POST para: `[http](http://localhost:8080/farmacias)`.
+1. Faça uma requisição POST para: `http://localhost:8080/farmacias`.
 2. 2. O request body deve ser seguir o formato a seguir:
     ```
     {
@@ -99,12 +99,12 @@ Certifique-se de ter instalado em sua máquina:
 ### Estoques
 #### Consulta de estoques
 
-1. Para a consulta geral de estoques, faça uma requisição GET para: `[http](http://localhost:8080/estoque)`.
-2. Para a consulta específica de estoque, digite o CNPJ da farmácia cujo estoque deseja consultar em uma requisição GET para `[http](http://localhost:8080/estoque/[CNPJ da farmácia])`.
+1. Para a consulta geral de estoques, faça uma requisição GET para: `http://localhost:8080/estoque`.
+2. Para a consulta específica de estoque, digite o CNPJ da farmácia cujo estoque deseja consultar em uma requisição GET para `http://localhost:8080/estoque/[CNPJ da farmácia]`.
 
 #### Cadastro de novo estoque
 
-1. Faça uma requisição POST para: `[http](http://localhost:8080/estoque)`.
+1. Faça uma requisição POST para: `http://localhost:8080/estoque`.
 2. 2. O request body deve ser seguir o formato a seguir:
     ```
     {
@@ -116,7 +116,7 @@ Certifique-se de ter instalado em sua máquina:
 
 #### Venda de medicamento (deleção de estoque)
 
-1. Faça uma requisição DELETE para: `[http](http://localhost:8080/estoque)`.
+1. Faça uma requisição DELETE para: `http://localhost:8080/estoque`.
 2. 2. O request body deve ser seguir o formato a seguir:
     ```
     {
@@ -130,7 +130,7 @@ OBS: Caso a quantidade em estoque do medicamento seja maior que a quantidade inf
 
 #### Troca de medicamento entre estoques
 
-1. Faça uma requisição PUT para: `[http](http://localhost:8080/estoque)`.
+1. Faça uma requisição PUT para: `http://localhost:8080/estoque`.
 2. O request body deve ser seguir o formato a seguir:
     ```
     {
