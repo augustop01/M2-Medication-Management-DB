@@ -8,6 +8,7 @@ import m2.MedMngt.DB.models.Estoque;
 import m2.MedMngt.DB.models.Farmacia;
 import m2.MedMngt.DB.models.Medicamento;
 import m2.MedMngt.DB.repository.EstoqueRepository;
+import m2.MedMngt.DB.repository.FarmaciaRepository;
 import m2.MedMngt.DB.repository.MedicamentoRepository;
 import m2.MedMngt.DB.service.EstoqueService;
 import org.modelmapper.ModelMapper;
@@ -30,10 +31,13 @@ public class EstoqueController {
     EstoqueRepository estoqueRepository;
 
     @Autowired
-    EstoqueService estoqueService;
+    FarmaciaRepository farmaciaRepository;
 
     @Autowired
     MedicamentoRepository medicamentoRepository;
+
+    @Autowired
+    EstoqueService estoqueService;
 
     @Autowired
     private ModelMapper mapper;
@@ -70,7 +74,7 @@ public class EstoqueController {
         if (estoqueRepository.findAllByCnpj(estoque.getCnpj()).isEmpty()){
             throwBadRequest("ERRO DE OPERAÇÃO: o CNPJ informado no campo 'cnpj' não consta no banco de dados.");
         }
-        if (estoqueRepository.findAllByNroRegistro(estoque.getNroRegistro()).isEmpty()){
+        if (medicamentoRepository.findById(estoque.getNroRegistro()).isEmpty()){
             throwBadRequest("ERRO DE OPERAÇÃO: o Número de Registro informado no campo 'nroRegistro' não consta no banco de dados.");
         }
         if (estoque.getQuantidade() <= 0){
@@ -133,10 +137,10 @@ public class EstoqueController {
         if (estoqueRequest.getCnpjOrigem() == null || estoqueRequest.getCnpjDestino() == null || estoqueRequest.getNroRegistro() == null || estoqueRequest.getQuantidade() == null){
             throwBadRequest("CAMPO OBRIGATÓRIO: Todos os campos ('cnpjOrigem', 'cnpjDestino, 'nroRegistro' e 'quantidade') são obrigatórios e devem ser informados.");
         }
-        if (estoqueRepository.findAllByCnpj(estoqueRequest.getCnpjOrigem()).isEmpty()){
+        if (farmaciaRepository.findById(estoqueRequest.getCnpjOrigem()).isEmpty()){
             throwBadRequest("ERRO DE OPERAÇÃO: o CNPJ informado no campo 'cnpjOrigem' não consta no banco de dados.");
         }
-        if (estoqueRepository.findAllByCnpj(estoqueRequest.getCnpjDestino()).isEmpty()){
+        if (farmaciaRepository.findById(estoqueRequest.getCnpjDestino()).isEmpty()){
             throwBadRequest("ERRO DE OPERAÇÃO: o CNPJ informado no campo 'cnpjDestino' não consta no banco de dados.");
         }
         if (estoqueRepository.findAllByNroRegistro(estoqueRequest.getNroRegistro()).isEmpty()){
