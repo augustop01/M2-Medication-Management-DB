@@ -2,7 +2,7 @@
 
 ## Descrição do Projeto
 
-Projeto avaliativo do Módulo II do curso DEVinHouse-[Clamed]-v2, que utiliza o framework Spring Boot para criar uma aplicação de um banco de dados de uma rede de farmácias, gerenciando seus medacimentos e estoques.
+Projeto avaliativo do Módulo II do curso DEVinHouse-[Clamed]-v2, que utiliza o framework Spring Boot para criar uma aplicação de um banco de dados de uma rede de farmácias, para gerenciamento de seus estoques.
 
 ## Tecnologias Utilizadas
 
@@ -67,13 +67,13 @@ Certifique-se de ter instalado em sua máquina:
 ### Farmacias
 #### Consulta de farmácias
 
-1. Para a consulta geral de farmácias, faça uma requisição GET para: `http://localhost:8080/farmacias`.
+1. Para a consulta geral de farmácias, faça uma requisição GET para: `http://localhost:8080/farmacias`;
 2. Para a consulta específica de farmácia, digite o CNPJ da farmácia em uma requisição GET para `http://localhost:8080/farmacias/[CNPJ da farmácia]`.
 
 #### Cadastro de nova farmácia
 
-1. Faça uma requisição POST para: `http://localhost:8080/farmacias`.
-2. 2. O request body deve ser seguir o formato a seguir:
+1. Faça uma requisição POST para: `http://localhost:8080/farmacias`;
+2. O request body deve ser seguir o formato a seguir:
     ```
     {
     "cnpj": [CNPJ da nova farmácia (somente números)],
@@ -99,13 +99,13 @@ Certifique-se de ter instalado em sua máquina:
 ### Estoques
 #### Consulta de estoques
 
-1. Para a consulta geral de estoques, faça uma requisição GET para: `http://localhost:8080/estoque`.
+1. Para a consulta geral de estoques, faça uma requisição GET para: `http://localhost:8080/estoque`;
 2. Para a consulta específica de estoque, digite o CNPJ da farmácia cujo estoque deseja consultar em uma requisição GET para `http://localhost:8080/estoque/[CNPJ da farmácia]`.
 
 #### Cadastro de novo estoque
 
-1. Faça uma requisição POST para: `http://localhost:8080/estoque`.
-2. 2. O request body deve ser seguir o formato a seguir:
+1. Faça uma requisição POST para: `http://localhost:8080/estoque`;
+2. O request body deve ser seguir o formato a seguir:
     ```
     {
         "cnpj": [CNPJ da respectiva farmácia (somente números)],
@@ -116,8 +116,8 @@ Certifique-se de ter instalado em sua máquina:
 
 #### Venda de medicamento (deleção de estoque)
 
-1. Faça uma requisição DELETE para: `http://localhost:8080/estoque`.
-2. 2. O request body deve ser seguir o formato a seguir:
+1. Faça uma requisição DELETE para: `http://localhost:8080/estoque`;
+2.  O request body deve ser seguir o formato a seguir:
     ```
     {
         "cnpj": [CNPJ da respectiva farmácia (somente números)],
